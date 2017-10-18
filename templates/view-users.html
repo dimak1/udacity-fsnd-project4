@@ -1,0 +1,46 @@
+{% extends "base.html" %} {% block content %}
+
+<div class="container">
+    <div class="text-center pt-5">
+        <h1 class="display-4">View Users</h1>
+        <hr class="my-4">
+    </div>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Type</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <th scope="row">{{user.id}}</th>
+                <td>{{user.first_name|title}} {{user.last_name|title}}</td>
+                <td>{{user.email}}</td>
+                <td>
+                    <a href="{{url_for('view_type_users', user_type_id=user.type.id)}}" class="btn btn-link type-{{user.type_id}}">{{user.type.type|title}}</a>
+                </td>
+                <td>
+                    <a href="{{url_for('user_details', user_id = user.id)}}" class="btn btn-primary">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if show_back_btn == True %}
+
+    <div class="py-5 text-center">
+        <a href="{{url_for('view_users')}}" class="btn btn-primary"><i class="fa fa-arrow-left pr-2" aria-hidden="true"></i>Back to All Users</a>
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

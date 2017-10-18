@@ -1,0 +1,27 @@
+.table tbody>tr>td {
+    vertical-align: middle;
+}
+
+.type-1 {
+    color: #28a745;
+}
+
+.type-2 {
+    color: #ffc107;
+}
+
+.type-3 {
+    color: #17a2b8;
+}
+
+.type-4 {
+    color: #007bff;
+}
+
+.type-5 {
+    color: #343a40;
+}
+
+.type-6 {
+    color: #dc3545;
+}
