@@ -24,15 +24,13 @@ session.query(Type).delete()
 url = "https://randomuser.me/api/";
 location = "ca,us"
 exclude_params = "login,cell,id"
-quantity = "20"
+quantity = "15"
 
 # Call randomuser api to get list of random users in json format
 # Sample reposonse at the end of this file
 response = requests.get(url + "?noinfo" + "&nat=" + location +
                         "&exc=" + exclude_params + "&results=" + quantity)
-#"https://randomuser.me/api/?nat=ca,us&noinfo&exc=login,cell,id&results=2")
-
-# print(response.content)
+# response = requests.get("http://randomuser.me/api/?nat=ca,us&noinfo&exc=login,cell,id&results=2")
 
 json_obj = response.json()
 # json.loads(response.content.decode('utf-8'))
@@ -53,14 +51,18 @@ session.commit()
 #  'Subscribed', 'Inactive', 'Cancelled']
 
 for item in json_obj["results"]:
+
     user = User(item["name"]["first"],
                 item["name"]["last"],
                 item["email"],
                 item["gender"][0].upper(),
                 item["dob"].split(" ", 1)[0],  # trim to keep date only
                 item["phone"],
-                item["location"],
+                item["location"]["street"],
+                item["location"]["city"],
+                item["location"]["state"],
                 item["nat"],
+                item["location"]["postcode"],
                 item["registered"].split(" ", 1)[0],  # trim to keep date only
                 random.randint(1, types_num),
                 item["picture"]["large"])

@@ -4,6 +4,16 @@
     <div class="text-center pt-5">
         <h1 class="display-3">Delete User</h1>
         <hr class="my-4">
+
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">Succesfully deleted user</h4>
+            <hr>
+            <p>{{user.first_name|title}} {{user.last_name|title}}</p>
+            <p>{{user.email}}</p>
+        </div>
+    </div>
+    <div class="py-5 text-center">
+        <a href="{{url_for('view_users')}}" class="btn btn-primary">View All Users</a>
     </div>
 </div>
 

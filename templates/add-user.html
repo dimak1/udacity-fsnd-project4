@@ -5,6 +5,102 @@
         <h1 class="display-4">Add New User</h1>
         <hr class="my-4">
     </div>
+    <div class="row justify-content-md-center mb-5">
+        <div class="col col-md-8">
+            <div class="card">
+                <form class="" action="{{url_for('add_user')}}" method="post">
+                    <div class="card-header text-center">
+                        <select class="custom-select" name="userTypeSelect" required>
+                        {% for type in user_types %}
+                            <option value="{{type.id}}">{{type.type|title}}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col text-center pb-3">
+                                <img src="{{ url_for('static', filename='avatar_new_user.png') }}" alt="Add New User" class="rounded-circle p-3" />
+                            </div>
+                        </div>
+                        <div class="form-row form-group">
+                            <div class="col">
+                                <label for="firstNameInput" class="small">First Name</label>
+                                <input type="text" class="form-control" name="firstNameInput" placeholder="Joe" required>
+                            </div>
+                            <div class="col">
+                                <label for="lastNameInput" class="small">Last Name</label>
+                                <input type="text" class="form-control" name="lastNameInput" placeholder="Smith" required>
+                            </div>
+                        </div>
+                        <div class="form-row form-group">
+                            <div class="col">
+                                <label for="emailInput" class="small">Email Address</label>
+                                <input type="email" class="form-control" name="emailInput" aria-describedby="emailHelp" placeholder="email@example.com" required>
+                            </div>
+                            <div class="col">
+                                <label for="phoneInput" class="small">Phone</label>
+                                <input type="number" class="form-control" name="phoneInput" aria-describedby="emailHelp" placeholder="5554433" maxlength="12" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row form-group">
+                            <div class="col">
+                                <label for="datepicker" class="small">Date of Birth</label>
+                                <input type="text" id="datepicker" name="datepicker" class="form-control p-1 datepicker" placeholder="1995-01-01" required>
+                                <small class="text-muted">Must be at least 18 years old</small>
+                            </div>
+                            <div class="col text-center">
+                                <label class="small">Gender</label>
+                                <div class="form-group">
+                                    <div class="form-check form-check-inline">
+                                        <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" name="gender" value="M" required> M
+                                  </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <label class="form-check-label">
+                                    <input class="form-check-input" type="radio" name="gender" value="F"> F
+                                  </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="addressInput" class="col-form-label small">Address</label>
+                            <input type="text" class="form-control" name="addressInput" placeholder="1234 Main St" required>
+                        </div>
+
+                        <div class="form-row form-group">
+                            <div class="col">
+                                <label for="cityInput" class="col-form-label small">City</label>
+                                <input type="text" class="form-control" name="cityInput" placeholder="Toronto" required>
+                            </div>
+                            <div class="col">
+                                <label for="stateInput" class="col-form-label small">State / Province</label>
+                                <input type="text" class="form-control" name="stateInput" placeholder="Ontario" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row form-group">
+                            <div class="col">
+                                <label for="countryInput" class="col-form-label small">Country</label>
+                                <input type="text" class="form-control" name="countryInput" placeholder="Canada" required>
+                            </div>
+                            <div class="col">
+                                <label for="postInput" class="col-form-label small">Zip / Postal</label>
+                                <input type="text" class="form-control" name="postInput" placeholder="A8A 8A8" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="{{url_for('view_users')}}" class="btn btn-danger mr-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Add New User</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}

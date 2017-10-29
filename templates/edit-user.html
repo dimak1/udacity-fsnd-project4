@@ -5,6 +5,98 @@
         <h1 class="display-4">Edit User</h1>
         <hr class="my-4">
     </div>
+
+    <div class="row justify-content-md-center">
+        <div class="col col-md-8">
+            <div class="card">
+                <form class="" action="{{url_for('edit_user', user_id = user.id)}}" method="post">
+                    <div class="card-header text-center">
+                        <select class="custom-select" name="userTypeSelect" required>
+                        {% for type in user_types %}
+                            <option value="{{type.id}}" {{ 'selected' if type.id==user.type.id }}>{{type.type|title}}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col text-center pb-3"><img class="rounded-circle p-3" src="{{user.picture}}" alt="avatar" /></div>
+                        </div>
+                        <div class="form-row form-group">
+                            <div class="col">
+                                <label for="firstNameInput" class="small">First Name</label>
+                                <input type="text" class="form-control" name="firstNameInput" value="{{user.first_name|title}}" maxlength="20" required>
+                            </div>
+                            <div class="col">
+                                <label for="lastNameInput" class="small">Last Name</label>
+                                <input type="text" class="form-control" name="lastNameInput" value="{{user.last_name|title}}" maxlength="20" required>
+                            </div>
+                        </div>
+                        <div class="form-row form-group">
+                            <div class="col">
+                                <label for="emailInput" class="small">Email Address</label>
+                                <input type="email" class="form-control" name="emailInput" aria-describedby="email" value="{{user.email}}" maxlength="50" required>
+                            </div>
+                            <div class="col">
+                                <label for="phoneInput" class="small">Phone</label>
+                                <input type="text" class="form-control" name="phoneInput" aria-describedby="phone" value="{{user.phone}}" maxlength="15" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row form-group">
+                            <div class="col">
+                                <label for="dob" class="small">Date of Birth</label>
+                                <p class="">
+                                    {{user.dob}}
+                                </p>
+                            </div>
+                            <div class="col">
+                                <label class="small">Gender</label>
+                                <p class="">
+                                    {{user.gender}}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="addressInput" class="col-form-label small">Address</label>
+                            <input type="text" class="form-control" name="addressInput" value="{{user.address|title}}" maxlength="70" required>
+                        </div>
+
+                        <div class="form-row form-group">
+                            <div class="col">
+                                <label for="cityInput" class="col-form-label small">City</label>
+                                <input type="text" class="form-control" name="cityInput" value="{{user.city|title}}" maxlength="20" required>
+                            </div>
+                            <div class="col">
+                                <label for="stateInput" class="col-form-label small">State / Province</label>
+                                <input type="text" class="form-control" name="stateInput" value="{{user.state|title}}" maxlength="20" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row form-group">
+                            <div class="col">
+                                <label for="countryInput" class="col-form-label small">Country</label>
+                                <input type="text" class="form-control" name="countryInput" value="{{user.country|title}}" maxlength="20" required>
+                            </div>
+                            <div class="col">
+                                <label for="postInput" class="col-form-label small">Zip / Postal</label>
+                                <input type="text" class="form-control" name="postInput" value="{{user.post|title}}" maxlength="8" required>
+                            </div>
+                        </div>
+                        <p class="card-text text-center"><small class="text-muted">Registered {{user.register_date}}</small></p>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="{{url_for('user_details', user_id = user.id)}}" class="btn btn-danger mr-2">Cancel</a>
+                        <button type="submit" class="btn btn-success mr-2">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row py-5 text-center">
+        <div class="col"><a href="{{url_for('view_users')}}" class="btn btn-primary">View All Users</a></div>
+    </div>
 </div>
 
 {% endblock %}

@@ -1,5 +1,6 @@
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template, redirect, url_for
 import psycopg2
+import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import desc
@@ -61,9 +62,96 @@ def view_type_users(user_type_id):
     return render_template("view-users.html", users=users, show_back_btn=True)
 
 
-@app.route('/users/add')
+@app.route('/users/<int:user_id>/edit', methods=['GET', 'POST'])
+def edit_user(user_id):
+
+    user = session.query(User).filter_by(id=user_id).first()
+
+    if request.method == 'GET':
+        user_types = session.query(Type)
+        return render_template("edit-user.html", user=user, user_types=user_types)
+
+    elif request.method == 'POST':
+
+        user.first_name = request.form["firstNameInput"]
+        user.last_name = request.form["lastNameInput"]
+        user.email = request.form["emailInput"]
+        user.phone = request.form["phoneInput"]
+        user.address = request.form["addressInput"]
+        user.city = request.form["cityInput"]
+        user.state = request.form["stateInput"]
+        user.country = request.form["countryInput"]
+        user.post = request.form["postInput"]
+        user.type_id = int(request.form["userTypeSelect"])
+
+        session.add(user)
+        session.commit()
+
+        return redirect(url_for('user_details', user_id=user_id))
+
+
+@app.route('/users/<int:user_id>/delete')
+def delete_user(user_id):
+
+    user = session.query(User).filter_by(id=user_id).first()
+    session.delete(user)
+    session.commit()
+
+    return render_template("delete-user.html", user=user, show_back_btn=True)
+
+
+@app.route('/users/add', methods=['GET', 'POST'])
 def add_user():
-    return render_template("add-user.html")
+
+    if request.method == 'GET':
+        user_types = session.query(Type)
+
+    elif request.method == 'POST':
+        now = datetime.datetime.now()
+        register_date = "{0}-{1}-{2}".format(str(now.year),
+                                             str(now.month), str(now.day))
+
+        if request.form["gender"].upper() == "M":
+            profile_avatar = "/static/avatar_male.png"
+        else:
+            profile_avatar = "/static/avatar_female.png"
+
+        user = User(request.form["firstNameInput"],
+                    request.form["lastNameInput"],
+                    request.form["emailInput"],
+                    request.form["gender"].upper(),
+                    request.form["datepicker"],
+                    request.form["phoneInput"],
+                    request.form["addressInput"],
+                    request.form["cityInput"],
+                    request.form["stateInput"],
+                    request.form["countryInput"],
+                    request.form["postInput"],
+                    register_date,
+                    request.form["userTypeSelect"],
+                    profile_avatar  # picture
+                    )
+
+        try:
+            # Add user to database
+            print("Updating user")
+            session.add(user)
+            session.commit()
+            print("New user added")
+            # new_user_id = session.query(User).filter(user).filter(id)
+            # email=request.form["emailInput"], phone=request.form["phoneInput"])
+
+            user = session.query(User).order_by(User.id.desc()).first()
+
+            return redirect(url_for('user_details', user_id=user.id))
+
+        except (Exception) as error:
+            print("Error while adding new user: ")
+            msg = "Failed to add new user."
+            result = "danger"
+            return redirect(url_for('view_users'))
+
+    return render_template("add-user.html", user_types=user_types)
 
 
 if __name__ == '__main__':

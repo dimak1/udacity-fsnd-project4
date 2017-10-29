@@ -5,7 +5,6 @@
         <h1 class="display-4">View Users</h1>
         <hr class="my-4">
     </div>
-
     <table class="table table-hover">
         <thead>
             <tr>
@@ -34,11 +33,9 @@
     </table>
 
     {% if show_back_btn == True %}
-
-    <div class="py-5 text-center">
-        <a href="{{url_for('view_users')}}" class="btn btn-primary"><i class="fa fa-arrow-left pr-2" aria-hidden="true"></i>Back to All Users</a>
+    <div class="row py-5 text-center">
+        <div class="col"><a href="{{url_for('view_users')}}" class="btn btn-primary">View All Users</a></div>
     </div>
-
     {% endif %}
 
 </div>
