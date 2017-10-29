@@ -1,17 +1,25 @@
-Place your catalog project in this directory.
+# Items Catalogue
 
-## Users
+Forth project from Udacity's [Full-Stack Web Developer Nanodegree Program](https://www.udacity.com/course/full-stack-web-developer-nanodegree--nd004).
 
-| id | first_name | last_name | email | address_id |
-| -------:| ----:| -----:|------:|------:|------:|
-| 0001 | John | Doe | john.doe@email.com | 25534 | 65434 |
+### About
 
-### User Details
+For this project I built a User Membership Management App to view, add, edit and delete users from database (CRUD operations).
 
-| id | user_id | gender | dob | phone | picture | register_date |
-| -------:| ----:| -----:|------:|------:|------:|
+Each user has basic information along with a type of membership.
 
-### User Address
+There are two databases:
+- User (to hold all users)
+- Type (to hold all user types)
 
-| id | user_id | country | state | city | street | postal |
-| -------:| ----:| -----:|------:|------:|------:|
+##### User table
+
+| id `PK` | first_name | last_name | email | gender | dob | phone | address | city | state | country | post | register_date | type_id `FK` | picture |
+| ---- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | Don | Arnold | don.arnold@example.com | M | 1970-03-05 | (973)-130-6982 | 3741 Spring St | Eugene | New York | US | 12594 | 2013-05-13 | 1 | picture_url |
+
+##### Type table
+
+| id `PK` | type |
+| --- | --- |
+| 1 | new |
