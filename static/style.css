@@ -25,3 +25,8 @@
 .type-6 {
     color: #dc3545;
 }
+
+.datepicker {
+    font-size: 1rem !important;
+    padding: .5rem .75rem !important;
+}
