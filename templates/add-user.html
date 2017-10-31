@@ -12,7 +12,7 @@
                     <div class="card-header text-center">
                         <select class="custom-select" name="userTypeSelect" required>
                         {% for type in user_types %}
-                            <option value="{{type.id}}">{{type.type|title}}</option>
+                            <option value="{{type.id}}">{{type.desc|title}}</option>
                         {% endfor %}
                         </select>
                     </div>
