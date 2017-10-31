@@ -11,17 +11,17 @@ class Type(Base):
     __tablename__ = 'types'
 
     id = Column(Integer, primary_key=True)
-    type = Column(String(20), nullable=False)
+    desc = Column(String(20), nullable=False)
 
-    def __init__(self, type):
-        self.type = type
+    def __init__(self, desc):
+        self.desc = desc
 
     @property
     def serialize(self):
         # return book data in serializable format
         return {
             'id': self.id,
-            'type': self.type
+            'desc': self.desc
         }
 
 # class to store user info

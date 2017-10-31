@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, render_template, redirect, url_for
 import psycopg2
 import datetime
+import json
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import desc
@@ -31,7 +32,7 @@ def dashboard():
     type_count = []
     for t in user_types:
         # Populate list of types
-        type_list.append(t.type)
+        type_list.append(t.desc)
         # Get count of users for each type
         type_count.append(session.query(User).filter_by(type_id=t.id).count())
 
@@ -152,6 +153,37 @@ def add_user():
             return redirect(url_for('view_users'))
 
     return render_template("add-user.html", user_types=user_types)
+
+
+# JSON ENDPOINTS
+
+
+@app.route('/users/json')
+def all_users_json():
+    """ Get json of all Users """
+    all_users = session.query(User).all()
+    return jsonify(data=[user.serialize for user in all_users])
+
+
+@app.route('/users/<int:user_id>/json')
+def user_json(user_id):
+    """ Get json of specific User """
+    user = session.query(User).filter_by(id=user_id).first()
+    return jsonify(data=[user.serialize])
+
+
+@app.route('/users/types/json')
+def all_user_types_json():
+    """ Get json of all Types """
+    all_types = session.query(Type).all()
+    return jsonify(data=[user_type.serialize for user_type in all_types])
+
+
+@app.route('/users/type/<int:type_id>/json')
+def user_type_json(type_id):
+    """ Get json of a specific Type """
+    user_type = session.query(Type).filter_by(id=type_id).first()
+    return jsonify(data=[user_type.serialize])
 
 
 if __name__ == '__main__':
