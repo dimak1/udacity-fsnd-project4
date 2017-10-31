@@ -21,7 +21,7 @@
         <div class="col col-md-8">
             <div class="card text-center">
                 <h4 class="card-header type-{{user.type_id}}">
-                    {{user.type.type|title}}
+                    {{user.type.desc|title}}
                 </h4>
                 <div class="card-body">
                     <img class="rounded-circle p-3" src="{{user.picture}}" alt="" />
@@ -34,7 +34,8 @@
                     </div>
                     <div class="row">
                         <div class="col"><i class="fa fa-map-pin pr-2"></i>{{user.address|title}}, {{user.city|title}}, {{user.state|title}}, {{user.country}},
-                            {{user.post}}</div>
+                            {{user.post}}
+                        </div>
                     </div>
                     <hr class="my-3">
                     <p class="card-text"><small class="text-muted">Registered {{user.register_date}}</small></p>
