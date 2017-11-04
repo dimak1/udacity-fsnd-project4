@@ -132,7 +132,10 @@ def gconnect():
     output += login_session['picture']
     output += '" class="rounded-circle p-3" style = "width: 300px; height: 300px;">'
     print("done!")
-    return output
+
+    response = make_response(json.dumps(login_session['username']), 200)
+
+    return response
 
 
 @app.route('/gdisconnect')
@@ -175,18 +178,24 @@ def gdisconnect():
         return response
 
 
-@app.route('/')
-def home():
-    user = "hey, user"
+@app.route('/getState')
+def getState():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in range(32))
     login_session['state'] = state
+    return state
 
+
+@app.route('/')
+def home():
+    user = "hey, user"
     # if login_session is None:
     #     login_session['logged_in'] = False
 
     print(login_session)
-    return render_template("home.html", STATE=state)
+    # print(state)
+    return render_template("home.html",
+                           login_session=login_session)
 
 
 @app.route('/dashboard')
@@ -203,7 +212,11 @@ def dashboard():
         # Get count of users for each type
         type_count.append(session.query(User).filter_by(type_id=t.id).count())
 
-    return render_template("dashboard.html", total_user_count=total_user_count, type_list=type_list, type_count=type_count)
+    return render_template("dashboard.html",
+                           total_user_count=total_user_count,
+                           type_list=type_list,
+                           type_count=type_count,
+                           login_session=login_session)
 
 
 @app.route('/users/type/')
@@ -215,19 +228,26 @@ def view_users():
     # user_types = session.query(Type).all()
     # for t in all_users:
     # print(t.type)
-    return render_template("view-users.html", users=all_users)
+    return render_template("view-users.html",
+                           users=all_users,
+                           login_session=login_session)
 
 
 @app.route('/users/<int:user_id>')
 def user_details(user_id):
     user = session.query(User).filter_by(id=user_id).join(Type).first()
-    return render_template("user-details.html", user=user)
+    return render_template("user-details.html",
+                           user=user,
+                           login_session=login_session)
 
 
 @app.route('/users/type/<int:user_type_id>')
 def view_type_users(user_type_id):
     users = session.query(User).filter_by(type_id=user_type_id).all()
-    return render_template("view-users.html", users=users, show_back_btn=True)
+    return render_template("view-users.html",
+                           users=users,
+                           show_back_btn=True,
+                           login_session=login_session)
 
 
 @app.route('/users/<int:user_id>/edit', methods=['GET', 'POST'])
@@ -237,7 +257,10 @@ def edit_user(user_id):
 
     if request.method == 'GET':
         user_types = session.query(Type)
-        return render_template("edit-user.html", user=user, user_types=user_types)
+        return render_template("edit-user.html",
+                               user=user,
+                               user_types=user_types,
+                               login_session=login_session)
 
     elif request.method == 'POST':
 
@@ -255,7 +278,12 @@ def edit_user(user_id):
         session.add(user)
         session.commit()
 
-        return redirect(url_for('user_details', user_id=user_id))
+        # return redirect(url_for('user_details',
+        #                         user_id=user_id,
+        #                         login_session=login_session))
+        return render_template("user-details.html",
+                               user=user,
+                               login_session=login_session)
 
 
 @app.route('/users/<int:user_id>/delete')
@@ -265,7 +293,10 @@ def delete_user(user_id):
     session.delete(user)
     session.commit()
 
-    return render_template("delete-user.html", user=user, show_back_btn=True)
+    return render_template("delete-user.html",
+                           user=user,
+                           show_back_btn=True,
+                           login_session=login_session)
 
 
 @app.route('/users/add', methods=['GET', 'POST'])
@@ -311,7 +342,9 @@ def add_user():
 
             user = session.query(User).order_by(User.id.desc()).first()
 
-            return redirect(url_for('user_details', user_id=user.id))
+            return redirect(url_for('user_details',
+                                    user_id=user.id,
+                                    login_session=login_session))
 
         except (Exception) as error:
             print("Error while adding new user: ")
@@ -319,7 +352,9 @@ def add_user():
             result = "danger"
             return redirect(url_for('view_users'))
 
-    return render_template("add-user.html", user_types=user_types)
+    return render_template("add-user.html",
+                           user_types=user_types,
+                           login_session=login_session)
 
 
 # def login_required(f):

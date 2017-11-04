@@ -12,6 +12,7 @@
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
     <script src="//apis.google.com/js/platform.js?onload=start"></script>
+    <!-- <script src="https://apis.google.com/js/platform.js" async defer></script> -->
 </head>
 
 <body>
@@ -29,6 +30,29 @@
                     <a class="nav-link" href="{{url_for('add_user')}}">Add New User</a>
                 </li>
             </ul>
+            <!-- <span id="logged-in-user" class="navbar-text text-light">
+               {{ login_session['username'] }}
+            </span> -->
+            <ul class="navbar-nav justify-content-end">
+                <li class="nav-item">
+                    <span id="signinButton">
+                        <span class="g-signin" data-scope="openid email" data-clientid="99126369781-6me199h96kp7njf11mo76d3jkuh6ntje.apps.googleusercontent.com" data-redirecturi="postmessage"
+                            data-accesstype="offline" data-cookiepolicy="single_host_origin" data-callback="signInCallback" data-approvalprompt="force">
+                        </span>
+                    </span>
+                </li>
+                <li class="nav-item text-light">
+                    <span id="loggedInUser" class="nav-link">
+                        {{ login_session['username'] }}
+                    </span>
+                </li>
+
+                <li id="signoutButton" class="nav-item text-light">
+                    {% if login_session['username'] %}{% endif %}
+                    <span class="nav-link" onclick="disconnect()">Logout</span>
+                </li>
+
+            </ul>
         </div>
     </nav>
 
@@ -42,8 +66,16 @@
         crossorigin="anonymous "></script>
     <script src="https://code.jquery.com/jquery-1.12.4.js "></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js "></script>
+    <script>
+        var logged = "{{ login_session['username'] }}";
+    </script>
     <script type="text/javascript " src="{{ url_for( 'static', filename='app.js' ) }} "></script>
 
 </body>
+
+</html>
+
+
+</html>
 
 </html>
