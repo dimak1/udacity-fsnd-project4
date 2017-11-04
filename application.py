@@ -18,7 +18,6 @@ session = DBSession()
 
 @app.route('/')
 def home():
-    user = "hey, user"
     return render_template("home.html")
 
 
@@ -44,10 +43,6 @@ def dashboard():
 def view_users():
     # Join User and Type tables to get user_type name for each user
     all_users = session.query(User).join(Type).all()
-    # filter(User.type_id == Type.id).all()
-    # user_types = session.query(Type).all()
-    # for t in all_users:
-    # print(t.type)
     return render_template("view-users.html", users=all_users)
 
 
