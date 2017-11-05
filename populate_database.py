@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, jsonify
 from sqlalchemy import *
 from setup_database import Base, User, Type
 from sqlalchemy.orm import sessionmaker
@@ -19,7 +19,7 @@ session.query(User).delete()
 session.query(Type).delete()
 
 # Configure random user API
-url = "https://randomuser.me/api/";
+url = "https://randomuser.me/api/"
 location = "ca,us"
 exclude_params = "login,cell,id"
 quantity = "15"
@@ -28,7 +28,8 @@ quantity = "15"
 # Sample reposonse at the end of this file
 response = requests.get(url + "?noinfo" + "&nat=" + location +
                         "&exc=" + exclude_params + "&results=" + quantity)
-# response = requests.get("http://randomuser.me/api/?nat=ca,us&noinfo&exc=login,cell,id&results=2")
+# response = requests.get(
+# "http://randomuser.me/api/?nat=ca,us&noinfo&exc=login,cell,id&results=2")
 
 json_obj = response.json()
 
@@ -89,9 +90,12 @@ print("Added " + quantity + " users")
 #             "registered": "2012-10-09 15:57:43",
 #             "phone": "(091)-076-3259",
 #             "picture": {
-#                 "large": "https://randomuser.me/api/portraits/men/44.jpg",
-#                 "medium": "https://randomuser.me/api/portraits/med/men/44.jpg",
-#                 "thumbnail": "https://randomuser.me/api/portraits/thumb/men/44.jpg"
+#                 "large":
+#                   "https://randomuser.me/api/portraits/men/44.jpg",
+#                 "medium":
+#                    "https://randomuser.me/api/portraits/med/men/44.jpg",
+#                 "thumbnail":
+#                   "https://randomuser.me/api/portraits/thumb/men/44.jpg"
 #             },
 #             "nat": "US"
 #         }

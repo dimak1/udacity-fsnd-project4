@@ -1,4 +1,5 @@
-from flask import Flask, jsonify, request, render_template, make_response, redirect, url_for
+from flask import Flask, jsonify, request, render_template
+from flask import make_response, redirect, url_for
 import psycopg2
 import datetime
 import json
@@ -27,14 +28,6 @@ session = DBSession()
 # Client secret json from Google
 secret_file = json.loads(open('client_secret.json', 'r').read())
 CLIENT_ID = secret_file['web']['client_id']
-
-
-# @app.route('/login')
-# def login():
-#     print("Login Function")
-#
-#     # return "The current session state is %s" % login_session['state']
-#     return render_template('home.html', STATE=state)
 
 alert = ""
 
@@ -110,8 +103,8 @@ def gconnect():
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
-                                 200)
+        response = make_response(
+            json.dumps('Current user is already connected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -150,7 +143,8 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=' + \
+        login_session['access_token']
 
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]

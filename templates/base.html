@@ -3,7 +3,8 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Home Page</title>
+    <title>User Management App</title>
+    <link rel="icon" href="{{url_for('static',filename='favicon.png')}}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
         crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -84,7 +85,7 @@
     <script>
         var userName = "{{ login_session['username'] }}";
     </script>
-    <script type="text/javascript " src="{{ url_for( 'static', filename='app.js' ) }} "></script>
+    <script type="text/javascript " src="{{url_for('static',filename='app.js')}}"></script>
 
 </body>
 
