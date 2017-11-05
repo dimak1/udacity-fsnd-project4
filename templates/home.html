@@ -2,12 +2,69 @@
 
 <div class="container">
     <div class="text-center pt-5">
-        <h1 class="display-3">Manage your users easily</h1>
-        <p class="lead">This app will allow you to manage your users</p>
+        <h1 class="display-3">User Management App</h1>
+        <p class="lead">This app allows you to keep track of your users</p>
         <hr class="my-4">
+
         <!-- <a class="btn btn-outline-primary btn-lg" href="#" role="button">Dashboard</a>
         <a class="btn btn-outline-primary btn-lg" href="#" role="button">View Users</a>
         <a class="btn btn-outline-primary btn-lg" href="#" role="button">Add New User</a> -->
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="3500">
+            <ol class="carousel-indicators">
+                <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+            </ol>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="jumbotron">
+                        <h1 class="text-primary">View All Users</h1>
+                        <p class="lead">List all users with basic information</p>
+                        <p class="text-primary mt-5"><i class="fa fa-list-ul fa-3x" aria-hidden="true"></i></p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="jumbotron">
+                        <h1 class="text-info">View User Details</h1>
+                        <p class="lead">Show user's details</p>
+                        <p class="text-info mt-5"><i class="fa fa-address-card-o fa-3x" aria-hidden="true"></i></p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="jumbotron">
+                        <h1 class="text-success">Add New User</h1>
+                        <p class="lead">Create new user</p>
+                        <p class="text-success mt-5"><i class="fa fa-user-plus fa-3x" aria-hidden="true"></i></p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="jumbotron">
+                        <h1 class="text-dark">Edit User</h1>
+                        <p class="lead">Update exising user information</p>
+                        <p class="text-dark mt-5"><i class="fa fa-edit fa-3x" aria-hidden="true"></i></p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="jumbotron">
+                        <h1 class="text-danger">Delete User</h1>
+                        <p class="lead">Delete existing user</p>
+                        <p class="text-danger mt-5"><i class="fa fa-user-times fa-3x" aria-hidden="true"></i></p>
+                    </div>
+                </div>
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+              </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+              </a>
+        </div>
+
+        <div class="">
+            Please sign in using your Google account for full features.
+        </div>
     </div>
 </div>
 {% endblock %}
