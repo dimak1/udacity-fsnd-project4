@@ -50,8 +50,11 @@ $ vagrant up
 $ vagrant ssh
 ```
 
+_In case of any issues, see Troubleshoot Guide below._
+
 Once logged in, populate database and run the app:
 ```
+$ cd /vagrant
 $ python3 populate_database.py
 $ python3 application.py
 ```
@@ -63,3 +66,7 @@ Go to application at http://localhost:5000/
 ![Home Page](https://github.com/dimak1/udacity-fsnd-project4/blob/master/static/screenshots/home-page.png)
 
 ![View Users Page](https://github.com/dimak1/udacity-fsnd-project4/blob/master/static/screenshots/view-users.png)
+
+> Troubleshoot Guide:
+>
+If vargrant is not starting up, run `vagrant global-status` and then `vagrant halt <id>` or `vagrand destroy <id>` on vagrant machines that are not needed anymore. Run `vagrant up` again.
