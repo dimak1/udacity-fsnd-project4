@@ -31,7 +31,7 @@
     padding: .5rem .75rem !important;
 }
 
-#logout-link {
+#signoutButton {
     cursor: pointer;
 }
 

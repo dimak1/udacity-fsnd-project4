@@ -4,55 +4,51 @@ $(document).ready(function() {
         maxDate: "-18Y"
     });
 
-    console.log(logged);
-    // console.log("State: " + state);
-
-    if ((logged == 'null') || (logged == '')) {
+    if ((userName == 'null') || (userName == '')) {
         hide.signoutButton();
     } else {
         hide.signinButton();
     }
-
 });
 
 function signInCallback(authResult) {
 
-    var state;
-
     $.get("/getState", function(data) {
-        state = data;
-        console.log("State: " + state);
 
         if (authResult['code']) {
-            // Hide the sign-in button now that the user is authorized
-            // $('#signinButton').attr('style', 'display: none');
 
             hide.signinButton();
-
             // Send the one-time-use code to the server, if the server responds, write a 'login successful' message to the web page and then redirect back to the main restaurants page
             $.ajax({
                 type: 'POST',
-                url: '/gconnect?state=' + state,
+                url: '/gconnect?state=' + data,
                 processData: false,
                 contentType: 'application/octet-stream; charset=utf-8',
                 data: authResult['code'],
-                success: function(data, textStatus) {
-                    console.log(data);
-                    console.log(textStatus);
+                success: function(signedInUser, textStatus) {
                     // Handle or verify the server response if necessary.
-                    if (data) {
-                        // $('#result').html('Login Successful!</br>' + result + '</br>')
-                        $('#loggedInUser').html(JSON.parse(data))
+                    if (signedInUser) {
+                        $('#loggedInUser').html(JSON.parse(signedInUser))
                         show.loggedInUser();
                         show.signoutButton();
-                        // setTimeout(function() {
-                        //     window.location.href = "/home";
-                        // }, 4000);
-
+                        $('.sign-in-msg').html(
+                            '<div class="alert alert-primary alert-dismissible fade show text-center" role="alert">Welcome, <strong>' +
+                            JSON.parse(signedInUser) + '</strong>! You are now signed in with Google!' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                            '<span aria-hidden="true">&times;</span></button></div>');
                     } else if (authResult['error']) {
                         console.log('There was an error: ' + authResult['error']);
+                        $('.sign-in-msg').html(
+                            '<div class="alert alert-danger alert-dismissible fade show text-center" role="alert">' +
+                            'Failed to sign in. Try again later.' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                            '<span aria-hidden="true">&times;</span></button></div>');
                     } else {
-                        $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+                        $('.sign-in-msg').html(
+                            '<div class="alert alert-danger alert-dismissible fade show text-center" role="alert">' +
+                            'Failed to make a server-side call. Check your configuration and console.' +
+                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                            '<span aria-hidden="true">&times;</span></button></div>');
                     }
                 }
             });
@@ -61,7 +57,6 @@ function signInCallback(authResult) {
 }
 
 function disconnect() {
-    console.log("Diconnecting...");
 
     $.ajax({
         type: 'GET',
@@ -69,29 +64,23 @@ function disconnect() {
         contentType: 'application/octet-stream; charset=utf-8',
         cache: false,
         success: function(data, textStatus) {
-            console.log(data);
-            console.log(textStatus);
+            console.log("Diconnecting.");
             hide.signoutButton();
             hide.loggedInUser();
             show.signinButton();
-            // Handle or verify the server response if necessary.
-            // if (result) {
-            //     // $('#result').html('Login Successful!</br>' + result + '</br>')
-            //     $('#logged-in-user').html('Welcome, ' + result)
-            //     // setTimeout(function() {
-            //     //     window.location.href = "/home";
-            //     // }, 4000);
-            //
-            // } else if (authResult['error']) {
-            //     console.log('There was an error: ' + authResult['error']);
-            // } else {
-            //     $('#result').html('Failed to make a server-side call. Check your configuration and console.');
-            // }
+            $('.sign-in-msg').html(
+                '<div class="alert alert-primary alert-dismissible fade show text-center" role="alert">Successfully signed out!' +
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                '<span aria-hidden="true">&times;</span></button></div>');
         },
         error: function(data, textStatus) {
-            console.log("Error");
+            console.log("Error while disconneting.");
+            $('.sign-in-msg').html(
+                '<div class="alert alert-danger alert-dismissible fade show text-center" role="alert">' +
+                'Failed to sign out. Please try again.' +
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                '<span aria-hidden="true">&times;</span></button></div>');
         }
-
     });
 }
 

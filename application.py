@@ -29,12 +29,12 @@ secret_file = json.loads(open('client_secret.json', 'r').read())
 CLIENT_ID = secret_file['web']['client_id']
 
 
-@app.route('/login')
-def login():
-    print("Login Function")
-
-    # return "The current session state is %s" % login_session['state']
-    return render_template('home.html', STATE=state)
+# @app.route('/login')
+# def login():
+#     print("Login Function")
+#
+#     # return "The current session state is %s" % login_session['state']
+#     return render_template('home.html', STATE=state)
 
 
 @app.route("/gconnect", methods=['POST'])
@@ -62,8 +62,6 @@ def gconnect():
 
     # Check that the access token is valid.
     access_token = credentials.access_token
-
-    # print(access_token)
 
     url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
            % access_token)
@@ -117,21 +115,7 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
-    # See if user exists, if they don't, add new user
-    # user_id = getUserID(login_session['email'])
-    # if not user_id:
-    #     user_id = createUser(login_session)
-    # login_session['user_id'] = user_id
-
-    # Welcome message
-    output = ''
-    output += '<h1>Welcome, '
-    output += login_session['username']
-    output += '!</h1>'
-    output += '<img src="'
-    output += login_session['picture']
-    output += '" class="rounded-circle p-3" style = "width: 300px; height: 300px;">'
-    print("done!")
+    print("Signed in with Google!")
 
     response = make_response(json.dumps(login_session['username']), 200)
 
@@ -140,12 +124,10 @@ def gconnect():
 
 @app.route('/gdisconnect')
 def gdisconnect():
-    print(login_session)
 
     access_token = login_session['access_token']
     print('In gdisconnect access token is ', access_token)
-    print('User name is: ')
-    print(login_session['username'])
+
     if access_token is None:
         print('Access Token is None')
         response = make_response(json.dumps(
@@ -154,8 +136,6 @@ def gdisconnect():
         return response
 
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
-
-    print("URL = ", url)
 
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
@@ -188,12 +168,6 @@ def getState():
 
 @app.route('/')
 def home():
-    user = "hey, user"
-    # if login_session is None:
-    #     login_session['logged_in'] = False
-
-    print(login_session)
-    # print(state)
     return render_template("home.html",
                            login_session=login_session)
 
@@ -222,12 +196,9 @@ def dashboard():
 @app.route('/users/type/')
 @app.route('/users')
 def view_users():
+
     # Join User and Type tables to get user_type name for each user
     all_users = session.query(User).join(Type).all()
-    # filter(User.type_id == Type.id).all()
-    # user_types = session.query(Type).all()
-    # for t in all_users:
-    # print(t.type)
     return render_template("view-users.html",
                            users=all_users,
                            login_session=login_session)
@@ -254,15 +225,24 @@ def view_type_users(user_type_id):
 def edit_user(user_id):
 
     user = session.query(User).filter_by(id=user_id).first()
+    user_types = session.query(Type)
 
     if request.method == 'GET':
-        user_types = session.query(Type)
         return render_template("edit-user.html",
                                user=user,
                                user_types=user_types,
                                login_session=login_session)
 
     elif request.method == 'POST':
+
+        if 'username' not in login_session:
+            alert = {'type': 'warning',
+                     'msg': 'You must be signed in to edit this user'}
+            return render_template("edit-user.html",
+                                   user=user,
+                                   user_types=user_types,
+                                   login_session=login_session,
+                                   alert=alert)
 
         user.first_name = request.form["firstNameInput"]
         user.last_name = request.form["lastNameInput"]
@@ -278,18 +258,27 @@ def edit_user(user_id):
         session.add(user)
         session.commit()
 
-        # return redirect(url_for('user_details',
-        #                         user_id=user_id,
-        #                         login_session=login_session))
+        alert = {'type': 'success',
+                 'msg': 'Successfully updated user details'}
         return render_template("user-details.html",
                                user=user,
-                               login_session=login_session)
+                               login_session=login_session,
+                               alert=alert)
 
 
 @app.route('/users/<int:user_id>/delete')
 def delete_user(user_id):
 
     user = session.query(User).filter_by(id=user_id).first()
+
+    if 'username' not in login_session:
+        alert = {'type': 'warning',
+                 'msg': 'You must be signed in to delete this user'}
+        return render_template("user-details.html",
+                               user=user,
+                               login_session=login_session,
+                               alert=alert)
+
     session.delete(user)
     session.commit()
 
@@ -306,6 +295,17 @@ def add_user():
         user_types = session.query(Type)
 
     elif request.method == 'POST':
+
+        user_types = session.query(Type)
+
+        if 'username' not in login_session:
+            alert = {'type': 'warning',
+                     'msg': 'You must be signed in to add new user'}
+            return render_template("add-user.html",
+                                   user_types=user_types,
+                                   login_session=login_session,
+                                   alert=alert)
+
         now = datetime.datetime.now()
         register_date = "{0}-{1}-{2}".format(str(now.year),
                                              str(now.month), str(now.day))
@@ -333,37 +333,30 @@ def add_user():
 
         try:
             # Add user to database
-            print("Updating user")
             session.add(user)
             session.commit()
-            print("New user added")
-            # new_user_id = session.query(User).filter(user).filter(id)
-            # email=request.form["emailInput"], phone=request.form["phoneInput"])
 
             user = session.query(User).order_by(User.id.desc()).first()
 
-            return redirect(url_for('user_details',
-                                    user_id=user.id,
-                                    login_session=login_session))
+            alert = {'type': 'success',
+                     'msg': 'New user added successfully.'}
+            return render_template('user-details.html',
+                                   user=user,
+                                   login_session=login_session,
+                                   alert=alert)
 
         except (Exception) as error:
             print("Error while adding new user: ")
-            msg = "Failed to add new user."
-            result = "danger"
-            return redirect(url_for('view_users'))
+            alert = {'type': 'danger',
+                     'msg': 'Error while adding new user.'}
+            return render_template("add-user.html",
+                                   user_types=user_types,
+                                   login_session=login_session,
+                                   alert=alert)
 
     return render_template("add-user.html",
                            user_types=user_types,
                            login_session=login_session)
-
-
-# def login_required(f):
-#     @wraps(f)
-#     def decorated_function(*args, **kwargs):
-#         if g.user is None:
-#             return redirect(url_for('login', next=request.url))
-#         return f(*args, **kwargs)
-#     return decorated_function
 
 # JSON ENDPOINTS
 
