@@ -13,8 +13,6 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 # Clear the tables
-# session.dropTable(User)
-# print(session.dropTable("User"))
 # User.__table__.drop()
 # Type.__table__.drop()
 session.query(User).delete()
@@ -33,7 +31,6 @@ response = requests.get(url + "?noinfo" + "&nat=" + location +
 # response = requests.get("http://randomuser.me/api/?nat=ca,us&noinfo&exc=login,cell,id&results=2")
 
 json_obj = response.json()
-# json.loads(response.content.decode('utf-8'))
 
 user_types_file = open("user_types.txt", "r")
 types = user_types_file.read().split(',')
@@ -47,8 +44,6 @@ for t in types:
     session.add(user_type)
 
 session.commit()
-# user_type = ['New', 'Promotion', 'Pay-As-You-Go',
-#  'Subscribed', 'Inactive', 'Cancelled']
 
 for item in json_obj["results"]:
 
@@ -72,7 +67,6 @@ session.commit()
 
 print("Added " + quantity + " users")
 
-# print(session.query(User).all())
 
 # Sample output from randomuser api
 # {
