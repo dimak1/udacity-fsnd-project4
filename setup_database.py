@@ -48,9 +48,6 @@ class User(Base):
 
     type = relationship(Type)
 
-    # address_id = Column(Integer, ForeignKey("user_details.details_id"))
-    # details_id = Column(Integer, ForeignKey("user_address.address_id"))
-
     def __init__(self, first_name, last_name, email, gender, dob,
                  phone, address, city, state, country, post, register_date, type_id, picture):
 
