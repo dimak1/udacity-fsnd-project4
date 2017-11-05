@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, render_template, make_response
+from flask import Flask, jsonify, request, render_template, make_response, redirect, url_for
 import psycopg2
 import datetime
 import json
@@ -35,6 +35,21 @@ CLIENT_ID = secret_file['web']['client_id']
 #
 #     # return "The current session state is %s" % login_session['state']
 #     return render_template('home.html', STATE=state)
+
+alert = ""
+
+
+def setAlert(type, msg):
+    global alert
+    alert = {'type': type,
+             'msg': msg}
+
+
+def getAlert():
+    global alert
+    alert_msg = alert
+    alert = ""
+    return alert_msg
 
 
 @app.route("/gconnect", methods=['POST'])
@@ -201,7 +216,8 @@ def view_users():
     all_users = session.query(User).join(Type).all()
     return render_template("view-users.html",
                            users=all_users,
-                           login_session=login_session)
+                           login_session=login_session,
+                           alert=getAlert())
 
 
 @app.route('/users/<int:user_id>')
@@ -209,7 +225,8 @@ def user_details(user_id):
     user = session.query(User).filter_by(id=user_id).join(Type).first()
     return render_template("user-details.html",
                            user=user,
-                           login_session=login_session)
+                           login_session=login_session,
+                           alert=getAlert())
 
 
 @app.route('/users/type/<int:user_type_id>')
@@ -224,6 +241,7 @@ def view_type_users(user_type_id):
 @app.route('/users/<int:user_id>/edit', methods=['GET', 'POST'])
 def edit_user(user_id):
 
+    global alert
     user = session.query(User).filter_by(id=user_id).first()
     user_types = session.query(Type)
 
@@ -236,13 +254,12 @@ def edit_user(user_id):
     elif request.method == 'POST':
 
         if 'username' not in login_session:
-            alert = {'type': 'warning',
-                     'msg': 'You must be signed in to edit this user'}
+            setAlert('warning', 'You must be signed in to edit this user')
             return render_template("edit-user.html",
                                    user=user,
                                    user_types=user_types,
                                    login_session=login_session,
-                                   alert=alert)
+                                   alert=getAlert())
 
         user.first_name = request.form["firstNameInput"]
         user.last_name = request.form["lastNameInput"]
@@ -258,12 +275,9 @@ def edit_user(user_id):
         session.add(user)
         session.commit()
 
-        alert = {'type': 'success',
-                 'msg': 'Successfully updated user details'}
-        return render_template("user-details.html",
-                               user=user,
-                               login_session=login_session,
-                               alert=alert)
+        setAlert('success', 'Updated user information')
+        return redirect(url_for('user_details',
+                                user_id=user_id))
 
 
 @app.route('/users/<int:user_id>/delete')
@@ -272,20 +286,17 @@ def delete_user(user_id):
     user = session.query(User).filter_by(id=user_id).first()
 
     if 'username' not in login_session:
-        alert = {'type': 'warning',
-                 'msg': 'You must be signed in to delete this user'}
-        return render_template("user-details.html",
-                               user=user,
-                               login_session=login_session,
-                               alert=alert)
+        setAlert('warning', 'You must be signed in to delete this user')
+        return redirect(url_for('user_details',
+                                user_id=user_id))
 
     session.delete(user)
     session.commit()
 
-    return render_template("delete-user.html",
-                           user=user,
-                           show_back_btn=True,
-                           login_session=login_session)
+    setAlert('success', "Deleted user " + user.first_name +
+             " " + user.last_name + " " + user.email)
+
+    return redirect(url_for('view_users'))
 
 
 @app.route('/users/add', methods=['GET', 'POST'])
@@ -299,12 +310,11 @@ def add_user():
         user_types = session.query(Type)
 
         if 'username' not in login_session:
-            alert = {'type': 'warning',
-                     'msg': 'You must be signed in to add new user'}
+            setAlert('warning', 'You must be signed in to add new user')
             return render_template("add-user.html",
                                    user_types=user_types,
                                    login_session=login_session,
-                                   alert=alert)
+                                   alert=getAlert())
 
         now = datetime.datetime.now()
         register_date = "{0}-{1}-{2}".format(str(now.year),
@@ -337,22 +347,18 @@ def add_user():
             session.commit()
 
             user = session.query(User).order_by(User.id.desc()).first()
+            setAlert('success', 'Added new user ' +
+                     user.first_name + ' ' + user.last_name)
 
-            alert = {'type': 'success',
-                     'msg': 'New user added successfully.'}
-            return render_template('user-details.html',
-                                   user=user,
-                                   login_session=login_session,
-                                   alert=alert)
+            return redirect(url_for('user_details', user_id=user.id))
 
         except (Exception) as error:
-            print("Error while adding new user: ")
-            alert = {'type': 'danger',
-                     'msg': 'Error while adding new user.'}
+            print("Error while adding new user.")
+            setAlert('danger', 'Error while adding new user')
             return render_template("add-user.html",
                                    user_types=user_types,
                                    login_session=login_session,
-                                   alert=alert)
+                                   alert=getAlert())
 
     return render_template("add-user.html",
                            user_types=user_types,

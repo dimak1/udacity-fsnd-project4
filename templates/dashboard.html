@@ -1,25 +1,22 @@
 {% extends "base.html" %} {% block content %}
 
 <div class="container">
-    <div class="text-center pt-5">
+    <div class="text-center pt-3">
         <h1 class="display-3">Dashboard</h1>
-        <hr class="my-4">
-        <div class="row mb-4">
+        <hr class="my-3">
+        <div class="row mb-3">
             <div class="col">
                 <div class="card border-primary">
                     <div class="card-body">
-                        <h4 class="card-title">Total Users</h4>
+                        <h3 class="card-title">Total Users</h3>
                         <h3 class="p-3">{{total_user_count}}</h3>
                         <a href="{{url_for('view_users')}}" class="btn btn-primary">View Users</a>
                     </div>
                 </div>
             </div>
         </div>
-
-        <div class="row mb-4">
-
+        <div class="row mb-3">
             {% for type in type_list %}
-
             <div class="col col-md-4 mb-4">
                 <div class="card border-secondary">
                     <div class="card-body">
@@ -29,19 +26,8 @@
                     </div>
                 </div>
             </div>
-
             {% endfor %}
         </div>
-
-        <!-- <div class="col-sm-4">
-                <div class="card border-danger">
-                    <div class="card-body">
-                        <h4 class="card-title">Expired Users</h4>
-                        <h3 class="p-3">3</h3>
-                        <a href="#" class="btn btn-outline-danger">Delete User</a>
-                    </div>
-                </div>
-            </div> -->
     </div>
 </div>
 

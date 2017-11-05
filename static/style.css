@@ -1,4 +1,9 @@
-.table tbody>tr>td {
+.btn.btn-link {
+    text-decoration: none;
+}
+
+.table tbody>tr>td,
+.table tbody>tr>th {
     vertical-align: middle;
 }
 

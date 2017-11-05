@@ -12,21 +12,28 @@
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
     <script src="//apis.google.com/js/platform.js?onload=start"></script>
+    <script>
+        $(document).ready(function() {
+            $("#{{request.endpoint}}").addClass("active");
+        })
+    </script>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="{{url_for('home')}}">Home</a>
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="{{url_for('dashboard')}}">Dashboard</a>
+                <li class="nav-item">
+                    <a id="home" class="nav-link" href="{{url_for('home')}}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('view_users')}}">View Users</a>
+                    <a id="dashboard" class="nav-link" href="{{url_for('dashboard')}}">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('add_user')}}">Add New User</a>
+                    <a id="view_users" class="nav-link" href="{{url_for('view_users')}}">View Users</a>
+                </li>
+                <li class="nav-item">
+                    <a id="add_user" class="nav-link" href="{{url_for('add_user')}}">Add New User</a>
                 </li>
             </ul>
             <ul class="navbar-nav justify-content-end">
@@ -54,7 +61,7 @@
             <div class="col col-md-8 sign-in-msg">
                 {% if alert %}
                 <div class="alert alert-{{alert['type']}} alert-dismissible fade show text-center" role="alert">
-                    {{alert['msg']}}
+                    {{alert.msg}}
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -63,6 +70,7 @@
             </div>
         </div>
     </div>
+
     {% block content %} {% endblock %}
 
     <script src=" https://code.jquery.com/jquery-3.1.1.slim.min.js " integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n "
