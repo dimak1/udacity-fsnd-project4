@@ -60,6 +60,6 @@ Go to application at http://localhost:5000/
 
 ### Screenshots
 
-![Home Page](https://github.com/dimak1/udacity-fsnd-project4/tree/master/static/screenshots/home-page.png)
+![Home Page](https://github.com/dimak1/udacity-fsnd-project4/blob/master/static/screenshots/home-page.png)
 
-![View Users Page](https://github.com/dimak1/udacity-fsnd-project4/tree/master/static/screenshots/view-users.png)
+![View Users Page](https://github.com/dimak1/udacity-fsnd-project4/blob/master/static/screenshots/view-users.png)
