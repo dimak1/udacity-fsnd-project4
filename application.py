@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, render_template, redirect, url_for, make_response
+from flask import Flask, jsonify, request, render_template, make_response
 import psycopg2
 import datetime
 import json
@@ -153,7 +153,7 @@ def gdisconnect():
         return response
     else:
         response = make_response(json.dumps(
-            'Failed to revoke token for given user.', 400))
+            'Failed to revoke token for given user.'), 400)
         response.headers['Content-Type'] = 'application/json'
         return response
 
