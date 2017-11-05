@@ -1,4 +1,3 @@
-from flask import Flask, render_template, jsonify
 from sqlalchemy import *
 from setup_database import Base, User, Type
 from sqlalchemy.orm import sessionmaker
@@ -25,7 +24,6 @@ types_num = len(types)
 user_types_file.close
 
 for t in types:
-    print(t)
     user_type = Type(t)
     session.add(user_type)
 
@@ -41,6 +39,7 @@ exclude_params = "login,cell,id"
 quantity = "15"
 
 # 2. Call api
+print("Generating random users...")
 response = requests.get(url + "?noinfo" + "&nat=" + location +
                         "&exc=" + exclude_params + "&results=" + quantity)
 # Sample api:
@@ -71,7 +70,7 @@ for item in json_obj["results"]:
 
 # 5. Commit session, insert all Users and display message
 session.commit()
-print("Added " + quantity + " users")
+print("Added " + quantity + " users!")
 
 
 # Sample output from randomuser api

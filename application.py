@@ -1,3 +1,8 @@
+# Full Stack Nanodegree Program - Udacity
+# Project 4 - Items Catalog
+# Author - Dima K
+# Date - Nov 2017
+
 from flask import Flask, jsonify, request, render_template
 from flask import make_response, redirect, url_for
 import psycopg2
