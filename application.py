@@ -29,16 +29,21 @@ session = DBSession()
 secret_file = json.loads(open('client_secret.json', 'r').read())
 CLIENT_ID = secret_file['web']['client_id']
 
+# Alert message used to display CRUD notifications on the page
 alert = ""
 
 
 def setAlert(type, msg):
+    """ Set message to be displayed on upon
+        success or error of CRUD operations """
     global alert
     alert = {'type': type,
              'msg': msg}
 
 
 def getAlert():
+    """ Get message to be displayed.
+        Clear message so it won't be diplayed upon page reload """
     global alert
     alert_msg = alert
     alert = ""
@@ -47,13 +52,14 @@ def getAlert():
 
 @app.route("/gconnect", methods=['POST'])
 def gconnect():
-    print("GConnect Function")
+    """ Connect to Google for user authentication """
 
     # Validate state token
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
+
     # Obtain authorization code
     code = request.data
 
@@ -75,8 +81,6 @@ def gconnect():
            % access_token)
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1].decode('utf-8'))
-
-    print(result)
 
     # If there was an error in the access token info, abort.
     if result.get('error') is not None:
@@ -125,6 +129,7 @@ def gconnect():
 
     print("Signed in with Google!")
 
+    # Return logged in user name as a response
     response = make_response(json.dumps(login_session['username']), 200)
 
     return response
@@ -132,9 +137,9 @@ def gconnect():
 
 @app.route('/gdisconnect')
 def gdisconnect():
+    """ Disconnect from Google and revoke access token """
 
     access_token = login_session['access_token']
-    print('In gdisconnect access token is ', access_token)
 
     if access_token is None:
         print('Access Token is None')
@@ -143,32 +148,34 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
+    # Revoke access token
     url = 'https://accounts.google.com/o/oauth2/revoke?token=' + \
         login_session['access_token']
 
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
-    print('result is ')
-    print(result)
-    print(result['status'])
+
+    # Check status of revoke call
     if result['status'] == '200':
         del login_session['access_token']
         del login_session['gplus_id']
         del login_session['username']
         del login_session['email']
         del login_session['picture']
-        response = make_response(json.dumps('Successfully disconnected.'), 200)
+        response = make_response(
+            json.dumps('Successfully disconnected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
     else:
-        response = make_response(json.dumps(
-            'Failed to revoke token for given user.'), 400)
+        response = make_response(
+            json.dumps('Failed to revoke token for given user.'), 400)
         response.headers['Content-Type'] = 'application/json'
         return response
 
 
 @app.route('/getState')
 def getState():
+    """ Get a session state for app user """
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in range(32))
     login_session['state'] = state
@@ -177,12 +184,12 @@ def getState():
 
 @app.route('/')
 def home():
-    return render_template("home.html",
-                           login_session=login_session)
+    return render_template("home.html", login_session=login_session)
 
 
 @app.route('/dashboard')
 def dashboard():
+    """ Diplay Dashboard page with information about all Users """
     # Get count of all users from User table
     total_user_count = session.query(User).count()
     # Get all user's types from Type table
@@ -205,18 +212,18 @@ def dashboard():
 @app.route('/users/type/')
 @app.route('/users')
 def view_users():
-
-    # Join User and Type tables to get user_type name for each user
-    all_users = session.query(User).join(Type).all()
+    """ Display all users """
+    users = session.query(User).all()
     return render_template("view-users.html",
-                           users=all_users,
+                           users=users,
                            login_session=login_session,
                            alert=getAlert())
 
 
 @app.route('/users/<int:user_id>')
 def user_details(user_id):
-    user = session.query(User).filter_by(id=user_id).join(Type).first()
+    """ Display details for a specific user """
+    user = session.query(User).filter_by(id=user_id).first()
     return render_template("user-details.html",
                            user=user,
                            login_session=login_session,
@@ -225,6 +232,7 @@ def user_details(user_id):
 
 @app.route('/users/type/<int:user_type_id>')
 def view_type_users(user_type_id):
+    """ Display all users with a specific type """
     users = session.query(User).filter_by(type_id=user_type_id).all()
     return render_template("view-users.html",
                            users=users,
@@ -234,8 +242,9 @@ def view_type_users(user_type_id):
 
 @app.route('/users/<int:user_id>/edit', methods=['GET', 'POST'])
 def edit_user(user_id):
+    """ GET: Display edit page for a specific user
+        POST: Update user and redirect to User Details page """
 
-    global alert
     user = session.query(User).filter_by(id=user_id).first()
     user_types = session.query(Type)
 
@@ -247,6 +256,8 @@ def edit_user(user_id):
 
     elif request.method == 'POST':
 
+        # If not signed in, set appropriate message
+        # and render Edit User page
         if 'username' not in login_session:
             setAlert('warning', 'You must be signed in to edit this user')
             return render_template("edit-user.html",
@@ -269,6 +280,7 @@ def edit_user(user_id):
         session.add(user)
         session.commit()
 
+        # Set success message and redirect to User Details page
         setAlert('success', 'Updated user information')
         return redirect(url_for('user_details',
                                 user_id=user_id))
@@ -276,9 +288,12 @@ def edit_user(user_id):
 
 @app.route('/users/<int:user_id>/delete')
 def delete_user(user_id):
+    """ Delete User and redirect to View Users page """
 
     user = session.query(User).filter_by(id=user_id).first()
 
+    # If not signed in, set appropriate message
+    # and render User Details page
     if 'username' not in login_session:
         setAlert('warning', 'You must be signed in to delete this user')
         return redirect(url_for('user_details',
@@ -289,12 +304,13 @@ def delete_user(user_id):
 
     setAlert('success', "Deleted user " + user.first_name +
              " " + user.last_name + " " + user.email)
-
     return redirect(url_for('view_users'))
 
 
 @app.route('/users/add', methods=['GET', 'POST'])
 def add_user():
+    """ GET: Display Add User page
+        POST: Add New User and redirect to newly added User Details page """
 
     if request.method == 'GET':
         user_types = session.query(Type)
@@ -303,6 +319,8 @@ def add_user():
 
         user_types = session.query(Type)
 
+        # If not signed in, set appropriate message
+        # and render Add User page
         if 'username' not in login_session:
             setAlert('warning', 'You must be signed in to add new user')
             return render_template("add-user.html",
@@ -310,10 +328,12 @@ def add_user():
                                    login_session=login_session,
                                    alert=getAlert())
 
+        # Get today's date as registration date
         now = datetime.datetime.now()
         register_date = "{0}-{1}-{2}".format(str(now.year),
                                              str(now.month), str(now.day))
 
+        # Set user avatars depending on gender
         if request.form["gender"].upper() == "M":
             profile_avatar = "/static/avatar_male.png"
         else:
@@ -336,10 +356,10 @@ def add_user():
                     )
 
         try:
-            # Add user to database
             session.add(user)
             session.commit()
 
+            # Get newly create user's info
             user = session.query(User).order_by(User.id.desc()).first()
             setAlert('success', 'Added new user ' +
                      user.first_name + ' ' + user.last_name)

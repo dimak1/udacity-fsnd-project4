@@ -18,25 +18,10 @@ session = DBSession()
 session.query(User).delete()
 session.query(Type).delete()
 
-# Configure random user API
-url = "https://randomuser.me/api/"
-location = "ca,us"
-exclude_params = "login,cell,id"
-quantity = "15"
-
-# Call randomuser api to get list of random users in json format
-# Sample reposonse at the end of this file
-response = requests.get(url + "?noinfo" + "&nat=" + location +
-                        "&exc=" + exclude_params + "&results=" + quantity)
-# response = requests.get(
-# "http://randomuser.me/api/?nat=ca,us&noinfo&exc=login,cell,id&results=2")
-
-json_obj = response.json()
-
+# Read User's types from file and insert them into Type databse
 user_types_file = open("user_types.txt", "r")
 types = user_types_file.read().split(',')
 types_num = len(types)
-print(types_num)
 user_types_file.close
 
 for t in types:
@@ -46,6 +31,25 @@ for t in types:
 
 session.commit()
 
+# To generate list on random Users, random user api is used, Steps 1-5
+# Sample reposonse at the end of this file
+
+# 1. Configure random user API url
+url = "https://randomuser.me/api/"
+location = "ca,us"
+exclude_params = "login,cell,id"
+quantity = "15"
+
+# 2. Call api
+response = requests.get(url + "?noinfo" + "&nat=" + location +
+                        "&exc=" + exclude_params + "&results=" + quantity)
+# Sample api:
+# "http://randomuser.me/api/?nat=ca,us&noinfo&exc=login,cell,id&results=15"
+
+# 3. Get json object from response
+json_obj = response.json()
+
+# 4. Create User(s)
 for item in json_obj["results"]:
 
     user = User(item["name"]["first"],
@@ -62,10 +66,11 @@ for item in json_obj["results"]:
                 item["registered"].split(" ", 1)[0],  # trim to keep date only
                 random.randint(1, types_num),
                 item["picture"]["large"])
+    # Add User to session, one at a time
     session.add(user)
 
+# 5. Commit session, insert all Users and display message
 session.commit()
-
 print("Added " + quantity + " users")
 
 

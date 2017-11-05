@@ -8,6 +8,8 @@ Base = declarative_base()
 
 
 class Type(Base):
+    """ Type object to represent a User's type/category """
+
     __tablename__ = 'types'
 
     id = Column(Integer, primary_key=True)
@@ -18,16 +20,15 @@ class Type(Base):
 
     @property
     def serialize(self):
-        # return book data in serializable format
         return {
             'id': self.id,
             'desc': self.desc
         }
 
-# class to store user info
-
 
 class User(Base):
+    """ User object to encapsulate Users's information """
+
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
