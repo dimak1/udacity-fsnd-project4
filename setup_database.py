@@ -46,12 +46,13 @@ class User(Base):
     register_date = Column(String(10), nullable=False)
     type_id = Column(Integer, ForeignKey('types.id'))
     picture = Column(String(100))
+    admin_id = Column(String(50), nullable=False)
 
     type = relationship(Type)
 
     def __init__(self, first_name, last_name, email, gender, dob,
                  phone, address, city, state, country, post,
-                 register_date, type_id, picture):
+                 register_date, type_id, picture, admin_id):
 
         self.first_name = first_name
         self.last_name = last_name
@@ -67,6 +68,7 @@ class User(Base):
         self.register_date = register_date
         self.type_id = type_id
         self.picture = picture
+        self.admin_id = admin_id
 
     @property
     def serialize(self):

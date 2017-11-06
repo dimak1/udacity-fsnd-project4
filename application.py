@@ -271,6 +271,14 @@ def edit_user(user_id):
                                    login_session=login_session,
                                    alert=getAlert())
 
+        if user.admin_id != login_session['email']:
+            setAlert('warning', 'You are not authorized to edit this user')
+            return render_template("edit-user.html",
+                                   user=user,
+                                   user_types=user_types,
+                                   login_session=login_session,
+                                   alert=getAlert())
+
         user.first_name = request.form["firstNameInput"]
         user.last_name = request.form["lastNameInput"]
         user.email = request.form["emailInput"]
@@ -301,6 +309,11 @@ def delete_user(user_id):
     # and render User Details page
     if 'username' not in login_session:
         setAlert('warning', 'You must be signed in to delete this user')
+        return redirect(url_for('user_details',
+                                user_id=user_id))
+
+    if user.admin_id != login_session['email']:
+        setAlert('warning', 'You are not authorized to delete this user')
         return redirect(url_for('user_details',
                                 user_id=user_id))
 
@@ -357,8 +370,8 @@ def add_user():
                     request.form["postInput"],
                     register_date,
                     request.form["userTypeSelect"],
-                    profile_avatar  # picture
-                    )
+                    profile_avatar,  # picture
+                    login_session['email'])
 
         try:
             session.add(user)

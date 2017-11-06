@@ -8,6 +8,7 @@ For this project I built a __User Management App__ with following features:
  - View, Add, Edit or Delete Users (CRUD operations)
  - Dashboard
  - Google authentication
+ - Authorization to edit/update only those Users that you created
  - Generate random User data via [API](https://randomuser.me/)
 
 > Note: __Google Account__ is required to Sign In to the app to _Add_, _Edit_ or _Delete_ Users. All other features available without sign in.

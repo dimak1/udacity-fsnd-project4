@@ -64,7 +64,8 @@ for item in json_obj["results"]:
                 item["location"]["postcode"],
                 item["registered"].split(" ", 1)[0],  # trim to keep date only
                 random.randint(1, types_num),
-                item["picture"]["large"])
+                item["picture"]["large"],
+                "system")
     # Add User to session, one at a time
     session.add(user)
 
