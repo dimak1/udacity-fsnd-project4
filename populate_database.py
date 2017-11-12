@@ -5,15 +5,16 @@ import requests
 import json
 import random
 
-engine = create_engine('sqlite:///users.db')
+# engine = create_engine('sqlite:///users.db')
+engine = create_engine('postgresql://admin:db_password@localhost/app_db')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 # Clear the tables
-# User.__table__.drop()
-# Type.__table__.drop()
+#User.__table__.drop()
+#Type.__table__.drop()
 session.query(User).delete()
 session.query(Type).delete()
 

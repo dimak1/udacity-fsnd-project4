@@ -92,5 +92,6 @@ class User(Base):
         }
 
 
-engine = create_engine('sqlite:///users.db')
+#engine = create_engine('sqlite:///users.db')
+engine = create_engine('postgresql://admin:db_password@localhost/app_db')
 Base.metadata.create_all(engine)
